@@ -54,10 +54,13 @@ function initMap() {
 		          title:data.result[i].username
 		        });
 	    	}
+	    	setTimeout(initMap,60000);
 
 	    });
 	  });
     }
+  }
+ // setInterval(initMap,60000);
 	// getLocation();
 		  
   //   var locations = [
@@ -86,7 +89,7 @@ function initMap() {
   //   {lat: -43.999792, lng: 170.463352}
   // ]
     
- }
+ 
 	// function initialMap() {
 
  //        var map = new google.maps.Map(document.getElementById('map'), {
