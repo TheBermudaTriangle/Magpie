@@ -138,7 +138,7 @@
 				$("#sign-in").attr("hidden","hidden");
 
 				//var userId = firebase.auth().currentUser.uid;
-				  firebase.database().ref('messages/').once('value').then(function(snapshot) {
+				  firebase.database().ref('messages/').once('child_added').then(function(snapshot) {
 				  var msg = snapshot.val().message;
 
 				  console.log(msg);
