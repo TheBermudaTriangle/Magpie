@@ -142,7 +142,7 @@
 				  var msg = snapshot.val().message;
 
 				  console.log(msg);
-				  displayMessage(snapshot.key,msg, user_photoURL);
+				  displayMessage(snapshot.key, msg);
 				  // ...
 				});
 				// ...
@@ -184,7 +184,7 @@
 		message_ref.limitToLast(12).on("child_added", function(data) {
 			//messages_ref.on('child_added', setMessage);
 			var y = data.val();
-			displayMessage(data.key, y.message, y.imageUri);
+			displayMessage(data.key, y.message);
 			//console.log(data.val());
 			//console.log(data.key);
 		});
@@ -199,7 +199,7 @@
 			$("#message").val(" ");
 		});
 
-		function displayMessage(key, message, picUrl) {
+		function displayMessage(key, message) {
 			var picUrl = 'img/user.png';
 			var div = document.getElementById(key);
 			// If an element for that message does not exists yet we create it.
