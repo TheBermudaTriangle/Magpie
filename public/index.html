@@ -170,7 +170,7 @@
 			'<div class="name"></div>' +
 			'</div>';
 		console.log(firebase)
-		var message_ref = firebase.database().ref('messages/');
+		var message_ref = firebase.database().ref('messages/' + user_name);
 		/*inserting data
 		message_ref.set({
 			'message':'how u doin?'
