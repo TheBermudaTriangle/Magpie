@@ -128,8 +128,9 @@
 				console.log(user.email);
 
 				var x = '<img></img>'
-				$("#user-pic").append(x).attr('src','user_photoURL');
-				$("#user-name").css("text",user_name);
+				$('#sign-in').css("visibility","hidden");
+				$("#user-pic").append(x).attr('src',user_photoURL);
+				$("#user-name").html('user_name');
 				$("#user-pic").css("display","block");
 				$("#user-name").css("display","block");
 				$("#sign-out").css("display","block")
