@@ -124,6 +124,8 @@
 
 				//var userId = firebase.auth().currentUser.uid;
 				firebase.database().ref('messages/').once('value').then(function(snapshot) {
+					console.log(snapshot);
+					console.log(snapshot.val());
 					var msg = snapshot.val().message;
 					console.log(msg);
 					displayMessage(snapshot.key, msg);
