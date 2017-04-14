@@ -121,6 +121,14 @@
 				console.log(user.displayName);
 				console.log(user.photoURL);
 				console.log(user.email);
+
+				//var userId = firebase.auth().currentUser.uid;
+				firebase.database().ref('messages/').once('value').then(function(snapshot) {
+					var msg = snapshot.val().message;
+					console.log(msg);
+					displayMessage(snapshot.key, msg);
+					// ...
+				});
 				// ...
 			}).catch(function(error) {
 				console.log('error');
