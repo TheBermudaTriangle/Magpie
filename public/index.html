@@ -61,7 +61,7 @@
 					<button hidden id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
           Sign-out
         </button>
-					<button hidden id="sign-in" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+					<button id="sign-in" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="handlesignin()">
           <i class="material-icons">account_circle</i>Sign-in with Google
         </button>
 				</div>
@@ -185,6 +185,38 @@
 	</script>
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=initMap">
 	</script>
+
+	<!--Google sign in suppoert-->
+	<script type="text/javascript">
+		function handlesignin() {
+			console.log('hi');
+			var provider = new firebase.auth.GoogleAuthProvider();
+			console.log(provider);
+			firebase.auth().signInWithPopup(provider).then(function(result) {
+				// This gives you a Google Access Token. You can use it to access the Google API.
+				var token = result.credential.accessToken;
+				// The signed-in user info.
+				var user = result.user;
+				console.log(user);
+				console.log(user.displayName);
+				console.log(user.photoURL);
+				console.log(user.email);
+				// ...
+			}).catch(function(error) {
+				console.log('error');
+				// Handle Errors here.
+				var errorCode = error.code;
+				console.log(error.message);
+				var errorMessage = error.message;
+				// The email of the user's account used.
+				var email = error.email;
+				// The firebase.auth.AuthCredential type that was used.
+				var credential = error.credential;
+				// ...
+			});
+		}
+	</script>
+
 </body>
 
 </html>
