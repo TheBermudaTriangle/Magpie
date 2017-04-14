@@ -1,46 +1,3 @@
-<!--
-
-							 R.I.P
-                        torque and b1ank
-                        /_____________\
-                       /               \
-                      /                 \
-                     /                   \
-                     |   XXXX     XXXX   |
-                     |   XXXX     XXXX   |
-                     |   XX         XX   |
-                     \         X         /
-                      __\    _XXX_     /__
-                       | |   _XXX_    | |
-                       | |           | |
-                       | I I I I I I I |
-                       |  I I I I I I  |
-                        \              /
-                          __         __
-                            \_______/
-                  XX                        XX
-                  XXXXX                  XXXXX
-                  XXXXXXXXX         XXXXXXXXXX
-                          XXXXX   XXXXX
-                             XXXXXXX
-                          XXXXX   XXXXX
-                  XXXXXXXXX         XXXXXXXXXX
-                  XXXXX                  XXXXX
-                  XX                        XX
-                          **************
-                          *   BEWARE   *
-                          **************
-                        All ye who enter here:
-                  Most of the code in this module
-                      is twisted beyond belief!
-                          Tread carefully.
-                    If you think you understand it,
-                             You Don't,
-                           So Look Again.
-
--->
-
-
 <!DOCTYPE html>
 <html>
 
@@ -226,7 +183,8 @@
 		//listening for data changes and returning last 12 messages
 		message_ref.limitToLast(12).on("child_added", function(data) {
 			//messages_ref.on('child_added', setMessage);
-			displayMessage(data.key, data.val().message);
+			var y = data.val();
+			displayMessage(data.key, y.message, y.imageUri);
 			//console.log(data.val());
 			//console.log(data.key);
 		});
@@ -234,14 +192,15 @@
 		//console.log(message_ref);
 		$("#submit").on("click", function() {
 			var msg = $("#message").val();
-			firebase.database().ref('messages/').push({
+			firebase.database().ref('messages/'+user_emailid).push({
 				'message': msg
+				'imageUri' : user_photoURL
 			});
 			$("#message").val(" ");
 		});
 
-		function displayMessage(key, message) {
-			var picUrl = 'img/user.png';
+		function displayMessage(key, message, picUrl) {
+			//var picUrl = 'img/user.png';
 			var div = document.getElementById(key);
 			// If an element for that message does not exists yet we create it.
 			if (!div) {
