@@ -194,13 +194,13 @@
 			var msg = $("#message").val();
 			firebase.database().ref('messages/'+user_name).push({
 				'message': msg
-				'imageUri' : user_photoURL
+				//'imageUri' : user_photoURL
 			});
 			$("#message").val(" ");
 		});
 
 		function displayMessage(key, message, picUrl) {
-			//var picUrl = 'img/user.png';
+			var picUrl = 'img/user.png';
 			var div = document.getElementById(key);
 			// If an element for that message does not exists yet we create it.
 			if (!div) {
