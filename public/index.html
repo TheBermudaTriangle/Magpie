@@ -126,7 +126,8 @@
 				firebase.database().ref('messages/').once('value').then(function(snapshot) {
 					console.log(snapshot);
 					console.log(snapshot.val());
-					console.log(snapshot.key);
+					console.log(snapshot.key[0].message);
+					console.log(snapshot.key[0]);
 					var msg = snapshot.val().message;
 					console.log(msg);
 					displayMessage(snapshot.key, msg);
