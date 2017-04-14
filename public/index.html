@@ -125,7 +125,8 @@
 				//var userId = firebase.auth().currentUser.uid;
 				firebase.database().ref('messages/').once('value').then(function(snapshot) {
 					console.log(snapshot);
-					console.log(snapshot.val()[0]);
+					console.log(snapshot.val());
+					console.log(snapshot.child("messages").val());
 					console.log(snapshot.key[0].message);
 					console.log(snapshot.key[0]);
 					var msg = snapshot.val().message;
@@ -227,6 +228,7 @@
 			}, 1);
 		}
 	</script>
+
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=initMap">
 	</script>
 
