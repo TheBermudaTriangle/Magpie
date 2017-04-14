@@ -129,12 +129,12 @@
 				console.log(user.email);
 
 				var x = '<img></img>'
-				$('#sign-in').css("visibility","hidden");
 				$("#user-pic").append(x).attr('src',user_photoURL);
-				$("#user-name").html('user_name');
-				$("#user-pic").css("display","block");
-				$("#user-name").css("display","block");
-				$("#sign-out").css("display","block")
+				$("#user-name").text(user_name);
+				$("#user-pic").removeAttr("hidden");
+				$("#user-name").removeAttr("hidden");
+				$("#sign-out").removeAttr("hidden");
+				$("#sign-in").attr("hidden","hidden");
 
 				//var userId = firebase.auth().currentUser.uid;
 				  firebase.database().ref('messages/').once('value').then(function(snapshot) {
