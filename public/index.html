@@ -108,6 +108,7 @@
 
 	<!--Google sign in support-->
 	<script type="text/javascript">
+		var user_emailid, user_name, user_photoURL;
 		function handlesignin() {
 			console.log('hi');
 			var provider = new firebase.auth.GoogleAuthProvider();
@@ -117,22 +118,29 @@
 				var token = result.credential.accessToken;
 				// The signed-in user info.
 				var user = result.user;
+				user_name = user.displayName;
+				user_emailid = user.email;
+				user_photoURL = user.photoURL;
+
 				console.log(user);
 				console.log(user.displayName);
 				console.log(user.photoURL);
 				console.log(user.email);
 
+				var x = '<img></img>'
+				$("#user-pic").append(x).attr('src','user_photoURL');
+				$("#user-name").css("text",user_name);
+				$("#user-pic").css("display","block");
+				$("#user-name").css("display","block");
+				$("#sign-out").css("display","block")
+
 				//var userId = firebase.auth().currentUser.uid;
-				firebase.database().ref('messages/').once('value').then(function(snapshot) {
-					console.log(snapshot);
-					console.log(snapshot.val());
-					console.log(snapshot.child("messages"));
-					console.log(snapshot.key[0].message);
-					console.log(snapshot.key[0]);
-					var msg = snapshot.val().message;
-					console.log(msg);
-					displayMessage(snapshot.key, msg);
-					// ...
+				  firebase.database().ref('messages/').once('value').then(function(snapshot) {
+				  var msg = snapshot.val().message;
+
+				  console.log(msg);
+				  displayMessage(snapshot.key,msg);
+				  // ...
 				});
 				// ...
 			}).catch(function(error) {
@@ -228,7 +236,6 @@
 			}, 1);
 		}
 	</script>
-
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=initMap">
 	</script>
 
