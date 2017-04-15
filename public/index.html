@@ -182,12 +182,12 @@
 
 				//listening for data changes and returning last 12 messages
 				message_ref.limitToLast(12).on("child_added", function(data) {
-					//messages_ref.on('child_added', setMessage);
+
 					var y = data.val();
 					displayMessage(data.key, y.message, y.imageURL, y.username);
 				});
 
-				//console.log(message_ref);
+
 				$("#submit").on("click", function() {
 					console.log('click happens');
 					var msg = $("#message").val();
