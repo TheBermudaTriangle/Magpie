@@ -15,10 +15,10 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<link rel="stylesheet" type="text/css" href="css/other.css">
 	<script src="js/jquery.js"></script>
-	<script src="js/other.js"></script>
 	<script src="markers.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+	<script src="js/other.js"></script>
 	<style type="text/css">
 		.mdl-layout__content {
 			background-image: url('img/bgimage.jpg');
@@ -59,7 +59,7 @@
 				<div id="user-container">
 					<div hidden id="user-pic"></div>
 					<div hidden id="user-name"></div>
-					<button hidden id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+					<button hidden id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="handlesignout()">
           Sign-out
         </button>
 					<button id="sign-in" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="handlesignin()">
@@ -90,160 +90,146 @@
 					</div>
 				</div>
 
-				<div id="must-signin-snackbar" class="mdl-js-snackbar mdl-snackbar">
-					<div class="mdl-snackbar__text"></div>
-					<button class="mdl-snackbar__action" type="button"></button>
-				</div>
-
-
 				<div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop" style="height:100%;background-color: red;">
-
-
 					<div id="map" style="width: 100%;height: 100%;"></div>
-
 				</div>
-
 			</div>
 		</main>
+	</div>
+
+	<div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+		<div class="mdl-snackbar__text"></div>
+		<button class="mdl-snackbar__action" type="button"></button>
 	</div>
 
 	<!--Google sign in support-->
 	<script type="text/javascript">
 		var user_emailid, user_name, user_photoURL;
+
+		//when user clicks Sign-in button
 		function handlesignin() {
-			console.log('hi');
 			var provider = new firebase.auth.GoogleAuthProvider();
-			console.log(provider);
 			firebase.auth().signInWithPopup(provider).then(function(result) {
 				// This gives you a Google Access Token. You can use it to access the Google API.
 				var token = result.credential.accessToken;
 				// The signed-in user info.
 				var user = result.user;
 				user_name = user.displayName;
-				user_emailid = user.email;
 				user_photoURL = user.photoURL;
+				console.log('sign-in part');
 
-				console.log(user);
-				console.log(user.displayName);
-				console.log(user.photoURL);
-				console.log(user.email);
-
-				var x = '<img id = "profile-pic" height="28px" width="28px"></img>'
-				$("#user-pic").append(x).attr('src',user_photoURL);
-				$("#profile-pic").attr('src',user_photoURL);
+				$("#user-pic").attr('background-image', user_photoURL);
 				$("#user-name").text(user_name);
 				$("#user-pic").removeAttr("hidden");
 				$("#user-name").removeAttr("hidden");
 				$("#sign-out").removeAttr("hidden");
-				$("#sign-in").attr("hidden","hidden");
+				$("#sign-in").attr("hidden", "hidden");
 
-				//var userId = firebase.auth().currentUser.uid;
-				  firebase.database().ref('messages/'+user_name).once('child_added').then(function(snapshot) {
-				  var msg = snapshot.val().message;
-
-				  console.log(msg);
-				  displayMessage(snapshot.key, msg);
-				  // ...
-				});
-				// ...
 			}).catch(function(error) {
 				console.log('error');
 				// Handle Errors here.
-				var errorCode = error.code;
 				console.log(error.message);
-				var errorMessage = error.message;
-				// The email of the user's account used.
-				var email = error.email;
-				// The firebase.auth.AuthCredential type that was used.
-				var credential = error.credential;
-				// ...
+			});
+		}
+
+		//when user clicks sign-out button
+		function handlesignout() {
+			firebase.auth().signOut().then(function() {
+				console.log('Sign out successful')
+				$("#sign-in").removeAttr("hidden");
+				$("#user-name").text("");
+				$("#user-pic").attr("hidden", "hidden");
+				$("#user-name").attr("hidden", "hidden");
+
+				$("#sign-out").attr("hidden", "hidden");
+
+				//detaching event listeners
+				$("#submit").off("click");
+				console.log('hu');
+
+				// Sign-out successful.
+			}).catch(function(error) {
+				// An error happened.
+				console.log('error');
 			});
 		}
 	</script>
-
 
 	<script type="text/javascript">
-		MESSAGE_TEMPLATE =
-			'<div class="message-container">' +
-			'<div class="spacing"><div class="pic"></div></div>' +
-			'<div class="message"></div>' +
-			'<div class="name"></div>' +
-			'</div>';
-		console.log(firebase)
-		var message_ref = firebase.database().ref('messages/' + user_name);
-		/*inserting data
-		message_ref.set({
-			'message':'how u doin?'
-		});
+		//when user's authentication state changes
+		firebase.auth().onAuthStateChanged(function(user) {
+			if (user) {
+				// User is signed in.
+				console.log('onauthstatechanged working');
+				var picUrl = 'img/user.png';
+				var profilePicUrl = user.photoURL;
+				var z = document.getElementById("user-pic");
+				z.style.backgroundImage = 'url(' + (profilePicUrl || picUrl) + ')';
+				var pic = 'url(\'' + user.photoURL + '\')';
+				$("#user-name").text(user.displayName);
+				$("#user-pic").removeAttr("hidden");
+				$("#user-name").removeAttr("hidden");
+				$("#sign-out").removeAttr("hidden");
+				$("#sign-in").attr("hidden", "hidden");
+				makeMyMap();
+				MESSAGE_TEMPLATE =
+					'<div class="message-container">' +
+					'<div class="spacing"><div class="pic"></div></div>' +
+					'<div class="message"></div>' +
+					'<div class="name"></div>' +
+					'</div>';
+				var message_ref = firebase.database().ref('messages/');
 
-		//removing data
-		//message_ref.remove();
+				//listening for data changes and returning last 12 messages
+				message_ref.limitToLast(12).on("child_added", function(data) {
+					//messages_ref.on('child_added', setMessage);
+					var y = data.val();
+					displayMessage(data.key, y.message, y.imageURL, y.username);
+				});
 
-	*/
-		//listening for data changes and returning last 12 messages
-		message_ref.limitToLast(12).on("child_added", function(data) {
-			//messages_ref.on('child_added', setMessage);
-			var y = data.val();
-			displayMessage(data.key, y.message);
-			//console.log(data.val());
-			//console.log(data.key);
-		});
+				//console.log(message_ref);
+				$("#submit").on("click", function() {
+					console.log('click happens');
+					var msg = $("#message").val();
+					firebase.database().ref('messages/').push({
+						'message': msg,
+						'imageURL': user.photoURL,
+						'username': user.displayName
 
-		//console.log(message_ref);
-		$("#submit").on("click", function() {
-			var msg = $("#message").val();
-			firebase.database().ref('messages/'+user_name).push({
-				'message': msg
-				//'imageUri' : user_photoURL
-			});
-			$("#message").val(" ");
-		});
+					});
+					$("#message").val(" ");
+				});
 
-		function displayMessage(key, message) {
-			var picUrl = 'img/user.png';
-			var div = document.getElementById(key);
-			// If an element for that message does not exists yet we create it.
-			if (!div) {
-				var container = document.createElement('div');
-				container.innerHTML = MESSAGE_TEMPLATE;
-				div = container.firstChild;
-				div.setAttribute('id', key);
-				$("#messages").append(div);
+				function displayMessage(key, message, picUrl, name) {
+					//var picUrl = 'img/user.png';
+					var div = document.getElementById(key);
+					// If an element for that message does not exists yet we create it.
+					if (!div) {
+						var container = document.createElement('div');
+						container.innerHTML = MESSAGE_TEMPLATE;
+						div = container.firstChild;
+						div.setAttribute('id', key);
+						$("#messages").append(div);
+					}
+					div.querySelector('.message').textContent = message;
+					var ht = document.getElementById("messages").scrollHeight;
+					$("#messages").scrollTop(ht);
+
+					if (picUrl) {
+						div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
+					}
+					div.querySelector('.name').textContent = name;
+					setTimeout(function() {
+						div.classList.add('visible')
+					}, 1);
+				}
 			}
-			div.querySelector('.message').textContent = message;
-			var ht = document.getElementById("messages").scrollHeight;
-			$("#messages").scrollTop(ht);
-			console.log(ht);
-
-			if (picUrl) {
-				div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
-			}
-			/*
-			div.querySelector('.name').textContent = name;
-			var messageElement = div.querySelector('.message');
-			if (text) { // If the message is text.
-			  messageElement.textContent = text;
-			  // Replace all line breaks by <br>.
-			  messageElement.innerHTML = messageElement.innerHTML.replace(/\n/g, '<br>');
-			} else if (imageUri) { // If the message is an image.
-			  var image = document.createElement('img');
-			  image.addEventListener('load', function() {
-			    this.messageList.scrollTop = this.messageList.scrollHeight;
-			  }.bind(this));
-			  this.setImageUrl(imageUri, image);
-			  messageElement.innerHTML = '';
-			  messageElement.appendChild(image);
-			}
-			*/
-			// Show the card fading-in and scroll to view the new message.
-			setTimeout(function() {
-				div.classList.add('visible')
-			}, 1);
-		}
+		});
+		console.log(makeMyMap);
 	</script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=initMap">
+	<script src="js/konami.js"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=makeMyMap">
 	</script>
-
 </body>
 
 </html>
