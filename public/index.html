@@ -175,7 +175,7 @@
 			$("#user-name").removeAttr("hidden");
 			$("#sign-out").removeAttr("hidden");
 			$("#sign-in").attr("hidden","hidden");
-		    makeMyMap();
+		    makeMyMap();	//map initialized
 		    MESSAGE_TEMPLATE =
 			'<div class="message-container">' +
 			'<div class="spacing"><div class="pic"></div></div>' +
@@ -201,7 +201,6 @@
 					'username' : user.displayName
 
 				});
-				$("#message").val(" ");
 			});
 
 			function displayMessage(key, message, picUrl, name) {

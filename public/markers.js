@@ -39,8 +39,28 @@ var makeMyMap = function(){
 		      zoom: 16,
 		      center: currentPosJson
 		    });
+
+
+	        var client_location = new google.maps.LatLng(currentDataJson.lat, currentDataJson.lng);
+	        var client_marker = new google.maps.Marker({
+								   position: client_location,
+								   map: map,
+								   });
+	        var infoWindow ;
+	        
+
 			//currentDataText = JSON.stringify(currentDataJson);
 			//console.log(currentDataText);
+
+			$("#submit").on("click",function(){
+				var dismsg = $("#message").val();
+				console.log(dismsg);
+				dismsg = user__name + " : " + dismsg;
+				infoWindow= new google.maps.InfoWindow({content:dismsg});
+				infoWindow.open(map, client_marker);
+				$("#message").val(" ");
+			})
+
 		    $.post("https://magpie-server.herokuapp.com",currentDataJson,function(data){
 		    	json=data;
 		    	//console.log(json);

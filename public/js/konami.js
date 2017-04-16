@@ -39,27 +39,16 @@
         konamiCodePosition = 0;
     });
 
-    function activateCheats() {
-    //  document.body.style.backgroundImage = "url('images/cheatBackground.png')";
-
-      //var audio = new Audio('audio/pling.mp3');
-      //audio.play();
-
-	        // Do something with the result
-	        var snackbarContainer = document.querySelector('#demo-snackbar-example');
-	        var data = {
+    function activateCheats() 
+    {
+    	 var snackbarContainer = document.querySelector('#demo-snackbar-example');
+	     var data = {
 	      message: 'Do the same thing again, and I will beat the shit out of you, you uchiha brat!',
 	      timeout: 3000,
-	     // actionHandler: handler,
 	      actionText: 'Undo'
 	    };
 	    snackbarContainer.MaterialSnackbar.showSnackbar(data);
-	    }
-	});
-
-      
-
-    }
+	  }
 
 <!-- end snippet -->
 
