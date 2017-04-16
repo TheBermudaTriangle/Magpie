@@ -44,11 +44,7 @@
 
       //var audio = new Audio('audio/pling.mp3');
       //audio.play();
-      $.ajax({
-	    url: 'https://magpie-server.herokuapp.com/',
-	    type: 'DELETE',
-	    data:{'username':'xcepti0n'} ,
-	    success: function(result) {
+
 	        // Do something with the result
 	        var snackbarContainer = document.querySelector('#demo-snackbar-example');
 	        var data = {
