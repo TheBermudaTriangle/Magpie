@@ -1,3 +1,10 @@
+var timeoutRepeat=true;
+var map;
+function EraseTimeout(){
+	timeoutRepeat=false;
+	map=null;
+  	console.log("timeoutReapeat: "+timeoutRepeat+" map: "+map);
+  }
 var makeMyMap = function(){
 	initMap();
 	var currentPosJson,currentDataJson;
@@ -19,8 +26,8 @@ var makeMyMap = function(){
 		console.log(currentPosJson);
 	}
 	function initMap() {
-		console.log(user__name);
-		if(user__name)
+		console.log(user__name +"continue: "+timeoutRepeat);
+		if(user__name && timeoutRepeat)
 		{
 			if (navigator.geolocation) {
 	        navigator.geolocation.getCurrentPosition(function(position){
@@ -35,8 +42,8 @@ var makeMyMap = function(){
 			}
 			//console.log(currentPosJson);        	
 	        
-	        var map = new google.maps.Map(document.getElementById('map'), {
-		      zoom: 16,
+	        map = new google.maps.Map(document.getElementById('map'), {
+		      zoom: 14,
 		      center: currentPosJson
 		    });
 
@@ -77,7 +84,9 @@ var makeMyMap = function(){
 			          title:data[i].username
 			        });
 		    	}
-		    	setTimeout(initMap,90000);
+		    	
+		    	
+		    	setTimeout(initMap,60000);		    	
 
 		    });
 		  });
@@ -86,3 +95,5 @@ var makeMyMap = function(){
 	    }
 	  }
 }
+
+
