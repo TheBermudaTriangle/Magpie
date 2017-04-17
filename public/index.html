@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Magpie</title>
+	<link rel="shortcut icon" href="img/favicon.png" />
+	<meta charset="utf-8">
+	<!-- Material Design Lite -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.orange-indigo.min.css">
+	<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+	<!-- App Styling -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/other.css">
+	<script src="js/jquery.js"></script>
+	<script src="markers.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+	<script src="js/other.js"></script>
+	<style type="text/css">
+		.mdl-layout__content {
+			background-image: url('img/bgimage.jpg');
+			background-size: cover;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="se-pre-con"></div>
+
+	<script src="https://www.gstatic.com/firebasejs/3.7.6/firebase.js"></script>
+	<script>
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyCTf3enOo9dJ864RFkpREFwmPlPTnndyF8",
+			authDomain: "magpie-a3c38.firebaseapp.com",
+			databaseURL: "https://magpie-a3c38.firebaseio.com",
+			projectId: "magpie-a3c38",
+			storageBucket: "magpie-a3c38.appspot.com",
+			messagingSenderId: "1042776118078"
+		};
+		firebase.initializeApp(config);
+	</script>
+
+
+
+	<!--Chat UI part-->
+	<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+		<!-- Header section containing logo -->
+		<header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
+			<div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+				<div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+					<h3 style="font-family:Josefin Sans;"><i class="material-icons">chat_bubble_outline</i> Magpie</h3><small> カサ</small>
+				</div>
+				<div id="user-container">
+					<div hidden id="user-pic"></div>
+					<div hidden id="user-name"></div>
+					<button hidden id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="handlesignout()">
+          Sign-out
+        </button>
+					<button id="sign-in" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="handlesignin()">
+          <i class="material-icons">account_circle</i>Sign-in with Google
+        </button>
+				</div>
+			</div>
+		</header>
+
+		<main class="mdl-layout__content mdl-color--grey-100">
+			<div id="messages-card-container" class="mdl-cell mdl-cell--12-col mdl-grid" style="height:calc(100% - 50px);">
+
+				<!-- Messages container -->
+				<div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--4-col-desktop">
+					<div class="mdl-card__supporting-text mdl-color-text--grey-600">
+						<div id="messages">
+							<span id="message-filler"></span>
+						</div>
+						<form id="message-form" action="#">
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<input class="mdl-textfield__input" type="text" id="message">
+								<label class="mdl-textfield__label" for="message">Message...</label>
+							</div>
+							<button id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+              Send
+            </button>
+						</form>
+					</div>
+				</div>
+
+				<div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop" style="height:100%;background-color: red;">
+					<div id="map" style="width: 100%;height: 100%; background: url('img/4.png') center;
+					background-size: cover;"></div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+	  <div class="mdl-snackbar__text"></div>
+	  <button class="mdl-snackbar__action" type="button"></button>
+	</div>
+
+	<!--Google sign in support-->
+	<script type="text/javascript">
+		var user_emailid, user_name, user_photoURL;
+
+		//when user clicks Sign-in button
+		function handlesignin() {
+			var provider = new firebase.auth.GoogleAuthProvider();
+			firebase.auth().signInWithPopup(provider).then(function(result) {
+				// This gives you a Google Access Token. You can use it to access the Google API.
+				var token = result.credential.accessToken;
+				// The signed-in user info.
+				var user = result.user;
+				user_name = user.displayName;
+				user_photoURL = user.photoURL;
+				console.log('sign-in part');
+
+				$("#user-pic").attr('background-image',user_photoURL);
+				$("#user-name").text(user_name);
+				$("#user-pic").removeAttr("hidden");
+				$("#user-name").removeAttr("hidden");
+				$("#sign-out").removeAttr("hidden");
+				$("#sign-in").attr("hidden","hidden");
+
+				}).catch(function(error) {
+				console.log('error');
+				// Handle Errors here.
+				console.log(error.message);
+			});
+		}
+
+		//when user clicks sign-out button
+		function handlesignout(){
+			firebase.auth().signOut().then(function() {
+			console.log('Sign out successful')
+			$("#sign-in").removeAttr("hidden");
+			$("#user-name").text("");
+			$("#user-pic").attr("hidden","hidden");
+			$("#user-name").attr("hidden","hidden");
+			
+			$("#sign-out").attr("hidden","hidden");
+
+			//detaching event listeners
+			$("#submit").off("click");
+			console.log('hu');
+
+			  // Sign-out successful.
+			}).catch(function(error) {
+			  // An error happened.
+			  console.log('error');
+			});
+		}		
+	</script>
+
+	<script type="text/javascript">
+	//when user's authentication state changes
+		//making user__name global
+		var user__name;
+		firebase.auth().onAuthStateChanged(function(user) {
+		  if (user) {
+		    // User is signed in.
+		    console.log('onauthstatechanged working');
+		    user__name = user.displayName;
+		    var picUrl = 'img/user.png';
+		    var profilePicUrl = user.photoURL;
+		    var z = document.getElementById("user-pic");
+		      z.style.backgroundImage = 'url(' + (profilePicUrl || picUrl) + ')';
+		    var pic = 'url(\'' + user.photoURL + '\')';
+			$("#user-name").text(user.displayName);
+			$("#user-pic").removeAttr("hidden");
+			$("#user-name").removeAttr("hidden");
+			$("#sign-out").removeAttr("hidden");
+			$("#sign-in").attr("hidden","hidden");
+		    makeMyMap();	//map initialized
+		    MESSAGE_TEMPLATE =
+			'<div class="message-container">' +
+			'<div class="spacing"><div class="pic"></div></div>' +
+			'<div class="message"></div>' +
+			'<div class="name"></div>' +
+			'</div>';
+			var message_ref = firebase.database().ref('messages/');
+
+			//listening for data changes and returning last 12 messages
+			message_ref.limitToLast(12).on("child_added", function(data) {
+				//messages_ref.on('child_added', setMessage);
+				var y = data.val();
+				displayMessage(data.key, y.message,y.imageURL,y.username);	
+			});
+
+			//console.log(message_ref);
+			$("#submit").on("click", function() {
+				console.log('click happens');
+				var msg = $("#message").val();
+				firebase.database().ref('messages/').push({
+					'message': msg,
+					'imageURL' : user.photoURL,
+					'username' : user.displayName
+
+				});
+			});
+
+			function displayMessage(key, message, picUrl, name) {
+				//var picUrl = 'img/user.png';
+				var div = document.getElementById(key);
+				// If an element for that message does not exists yet we create it.
+				if (!div) {
+					var container = document.createElement('div');
+					container.innerHTML = MESSAGE_TEMPLATE;
+					div = container.firstChild;
+					div.setAttribute('id', key);
+					$("#messages").append(div);
+				}
+				div.querySelector('.message').textContent = message;
+				var ht = document.getElementById("messages").scrollHeight;
+				$("#messages").scrollTop(ht);
+
+				if (picUrl) {
+					div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
+				}
+				div.querySelector('.name').textContent = name;
+				setTimeout(function() {
+					div.classList.add('visible')
+				}, 1);
+			}
+		  }
+		});
+		console.log(makeMyMap);
+			</script>
+	<script src="js/konami.js"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=makeMyMap">
+	</script>
+</body>
+</html>
