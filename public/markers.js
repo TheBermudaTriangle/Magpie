@@ -1,32 +1,68 @@
-var map;
-var infoWindow;
-var toggleVar = 0;
 var makeMyMap = function(){
-	if(typeof latitude == 'undefined'){
-		setTimeout(makeMyMap,10000)
+	initMap();
+	var currentPosJson,currentDataJson;
+	function getLocation() {
+	    if (navigator.geolocation) {
+	        navigator.geolocation.getCurrentPosition(showPosition);
+	    }
 	}
-	else{
-		initMap();
+	function showPosition(position) {
+		currentDataJson={
+			lat: position.coords.latitude,
+			lng: position.coords.longitude,
+			username:user__name
+		}
+		currentPosJson={
+			lat: position.coords.latitude,
+			lng: position.coords.longitude
+		}
+		console.log(currentPosJson);
 	}
-}
-function initMap(){
-	map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 16,
-      center: new google.maps.LatLng(latitude,longitude)
-    });
-}
-function addMarker(lat,lng,msg,user){
-	if(user == user__name && toggleVar == 1)
-	{
-		infoWindow.close();
-	}
-	toggleVar = 1;
-    var client_location = new google.maps.LatLng(lat,lng);
-    var client_marker = new google.maps.Marker({
-						   position: client_location,
-						   map: map,
-						   });
-    console.log('marker');
-	infoWindow= new google.maps.InfoWindow({content:user + " : " + msg});
-	infoWindow.open(map, client_marker);
+	function initMap() {
+		console.log(user__name);
+		if(user__name)
+		{
+			if (navigator.geolocation) {
+	        navigator.geolocation.getCurrentPosition(function(position){
+				currentDataJson={
+				lat: position.coords.latitude,
+				lng: position.coords.longitude,
+				username:user__name
+			}
+			currentPosJson={
+				lat: position.coords.latitude,
+				lng: position.coords.longitude
+			}
+			//console.log(currentPosJson);        	
+	        
+	        var map = new google.maps.Map(document.getElementById('map'), {
+		      zoom: 16,
+		      center: currentPosJson
+		    });
+			//currentDataText = JSON.stringify(currentDataJson);
+			//console.log(currentDataText);
+		    $.post("https://magpie-server.herokuapp.com",currentDataJson,function(data){
+		    	json=data;
+		    	//console.log(json);
+		    	var marker=[];
+		    	for(var i=0;i<data.length;i++){
+		    		var pos={
+							lat: Number(data[i].lat),
+							lng: Number(data[i].lng)
+						}
+					//console.log(pos);
+		    		marker[i] = new google.maps.Marker({
+			          position: pos,
+			          map: map,
+			          title:data[i].username
+			        });
+		    	}
+		    	setTimeout(initMap,90000);
+
+		    });
+		  });
+		}
+
+	    }
+	  }
 }

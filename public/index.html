@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Magpie</title>
 	<link rel="shortcut icon" href="img/favicon.png" />
@@ -52,7 +53,7 @@
 		<!-- Header section containing logo -->
 		<header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
 			<div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
-				<div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop chat_part">
+				<div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
 					<h3 style="font-family:Josefin Sans;"><i class="material-icons">chat_bubble_outline</i> Magpie</h3><small> カサ</small>
 				</div>
 				<div id="user-container">
@@ -82,14 +83,14 @@
 								<input class="mdl-textfield__input" type="text" id="message">
 								<label class="mdl-textfield__label" for="message">Message...</label>
 							</div>
-							<button id="send_button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+							<button id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
               Send
             </button>
 						</form>
 					</div>
 				</div>
 
-				<div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop map_part" style="height:100%;background-color: red;">
+				<div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop" style="height:100%;background-color: red;">
 					<div id="map" style="width: 100%;height: 100%; background: url('img/4.png') center;
 					background-size: cover;"></div>
 				</div>
@@ -139,16 +140,13 @@
 			$("#sign-in").removeAttr("hidden");
 			$("#user-name").text("");
 			$("#user-pic").attr("hidden","hidden");
-			$("#user-name").attr("hidden","hidden");		
+			$("#user-name").attr("hidden","hidden");
+			
 			$("#sign-out").attr("hidden","hidden");
 
 			//detaching event listeners
 			$("#submit").off("click");
-
-			//resetting map and chat divs
-			$('#messages div').remove();
- 			$('#map').html("");
-
+			console.log('hu');
 
 			  // Sign-out successful.
 			}).catch(function(error) {
@@ -162,15 +160,6 @@
 	//when user's authentication state changes
 		//making user__name global
 		var user__name;
-		var counter = 0;
-		var latitude,longitude;
-		if (navigator.geolocation) 
-		{
-        	navigator.geolocation.getCurrentPosition(function(position){
-			latitude =  position.coords.latitude;
-			longitude =  position.coords.longitude;
-			});
-		}
 		firebase.auth().onAuthStateChanged(function(user) {
 		  if (user) {
 		    // User is signed in.
@@ -186,6 +175,7 @@
 			$("#user-name").removeAttr("hidden");
 			$("#sign-out").removeAttr("hidden");
 			$("#sign-in").attr("hidden","hidden");
+		    makeMyMap();
 		    MESSAGE_TEMPLATE =
 			'<div class="message-container">' +
 			'<div class="spacing"><div class="pic"></div></div>' +
@@ -198,29 +188,20 @@
 			message_ref.limitToLast(12).on("child_added", function(data) {
 				//messages_ref.on('child_added', setMessage);
 				var y = data.val();
-				displayMessage(data.key, y.message,y.imageURL,y.username);
-				counter += 1;
-				if(counter >12)
-				{
-					addMarker(y.latitude,y.longitude,y.message,y.username);	
-				}
-				
-				console.log('on');
-
+				displayMessage(data.key, y.message,y.imageURL,y.username);	
 			});
 
 			//console.log(message_ref);
-			$("#send_button").on("click", function() {
+			$("#submit").on("click", function() {
 				console.log('click happens');
 				var msg = $("#message").val();
-				$("#message").val(" ");
 				firebase.database().ref('messages/').push({
 					'message': msg,
 					'imageURL' : user.photoURL,
-					'username' : user.displayName,
-					'latitude' : latitude,
-					'longitude' : longitude
+					'username' : user.displayName
+
 				});
+				$("#message").val(" ");
 			});
 
 			function displayMessage(key, message, picUrl, name) {
@@ -248,7 +229,7 @@
 			}
 		  }
 		});
-		//console.log(makeMyMap);
+		console.log(makeMyMap);
 			</script>
 	<script src="js/konami.js"></script>
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBslWY6T3lpGDhseouNkGJjpF_AKlsGAWs&callback=makeMyMap">
